@@ -52,7 +52,7 @@ const transactionSchema = new mongoose.Schema(
             type: String,
             trim: true,
             maxlength: 500,
-            default: ''
+            required: false
         }
     },
     {

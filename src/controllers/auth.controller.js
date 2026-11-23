@@ -6,7 +6,7 @@ const responseManager = require('../utils/responseManager');
 const seedDefaultCategories = require('../utils/seedDefaultCategories');
 
 const register = async (req, res) => {
-    const { name, username, email, password } = req.body;
+    const { currency, name, username, email, password } = req.body;
 
     const existingUser = await User.findOne({ $or: [{ email }, { username }] });
 
@@ -18,7 +18,7 @@ const register = async (req, res) => {
         throw new AppError('Username already taken', 409);
     }
 
-    const user = await User.create({ name, username, email, password, categories: seedDefaultCategories() });
+    const user = await User.create({ currency, name, username, email, password, categories: seedDefaultCategories() });
 
     const token = jwt.sign(
         { sub: user._id.toString() },

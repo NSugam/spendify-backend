@@ -30,6 +30,8 @@ const categorySchema = new mongoose.Schema({
 
 const userSchema = new mongoose.Schema(
     {
+        currency: { type: String, default: "Rs." },
+
         username: {
             type: String,
             required: [true, 'Username is required'],

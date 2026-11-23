@@ -55,7 +55,6 @@ const getTransactions = async (req, res) => {
     };
 
     if (calendar === 'english') {
-        // Nepal timezone is UTC +05:45
         const offset = 5 * 60 + 45;
 
         const startDate = new Date(
@@ -77,9 +76,45 @@ const getTransactions = async (req, res) => {
         filter['nepaliDate.month'] = month;
     }
 
-    const transactions = await Transaction.find(filter)
-        .sort({ englishDate: -1, createdAt: -1 })
-        .lean();
+    // Fetch transactions and calculate summary simultaneously
+    const [transactions, summaryResult] = await Promise.all([
+        Transaction.find(filter)
+            .sort({ englishDate: -1, createdAt: -1 })
+            .lean(),
+
+        Transaction.aggregate([
+            { $match: filter },
+            {
+                $group: {
+                    _id: null,
+
+                    totalIncome: {
+                        $sum: {
+                            $cond: [
+                                { $eq: ['$type', 'income'] },
+                                '$amount',
+                                0
+                            ]
+                        }
+                    },
+
+                    totalExpense: {
+                        $sum: {
+                            $cond: [
+                                { $eq: ['$type', 'expense'] },
+                                '$amount',
+                                0
+                            ]
+                        }
+                    },
+
+                    totalTransactions: {
+                        $sum: 1
+                    }
+                }
+            }
+        ])
+    ]);
 
     const categoryMap = new Map(
         req.user.categories.map((category) => [
@@ -106,11 +141,23 @@ const getTransactions = async (req, res) => {
         };
     });
 
+    const summary = summaryResult[0] || {
+        totalIncome: 0,
+        totalExpense: 0,
+        totalTransactions: 0
+    };
+
     return responseManager.success(
         res,
         200,
         'Transactions fetched successfully',
         {
+            filter: calendar && year && month ? { calendar, year, month } : null,
+            summary: {
+                totalTransactions: summary.totalTransactions,
+                totalIncome: summary.totalIncome,
+                totalExpense: summary.totalExpense,
+            },
             transactions: formattedTransactions
         }
     );

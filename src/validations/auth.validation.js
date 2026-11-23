@@ -1,6 +1,8 @@
 const { z } = require('zod');
 
 const registerSchema = z.object({
+    currency: z.string().optional(),
+
     name: z.string()
         .trim()
         .min(3, 'Name must be at least 3 characters')
