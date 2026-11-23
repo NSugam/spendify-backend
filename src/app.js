@@ -10,6 +10,15 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+
+app.get('/', (req, res) => {
+    res.status(200).json({
+        success: true,
+        message: 'Welcome to Spendify API 🚀',
+        version: '1.0.0'
+    });
+});
+
 // API routes
 app.use('/api', require('./routes'));
 
