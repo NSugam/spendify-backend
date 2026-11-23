@@ -50,7 +50,16 @@ const login = async (req, res) => {
     );
 
     const userData = user.toJSON();
-    return responseManager.success(res, 200, 'Login successful', { user: userData, token });
+
+    const cookieName = process.env.AUTH_COOKIE;
+    res.cookie(cookieName, token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV !== 'dev',
+        sameSite: 'none',
+        maxAge: 7 * 24 * 60 * 60 * 1000, //1 week
+        path: '/'
+    });
+    return responseManager.success(res, 200, 'Login successful', { user: userData });
 };
 
 module.exports = {

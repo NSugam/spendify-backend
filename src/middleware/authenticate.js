@@ -4,17 +4,9 @@ const User = require('../models/user.model');
 const AppError = require('../utils/AppError');
 
 const authenticate = async (req, res, next) => {
-    const authHeader = req.headers.authorization;
-
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-        throw new AppError('Authentication required', 401);
-    }
-
-    const token = authHeader.split(' ')[1];
-
-    if (!token) {
-        throw new AppError('Invalid authentication token', 401);
-    }
+    const cookie = process.env.AUTH_COOKIE;
+    const token = req.cookies[cookie];
+    if (!token) throw new AppError('Invalid authentication token', 401);
 
     let decoded;
 
