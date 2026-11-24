@@ -62,6 +62,19 @@ const login = async (req, res) => {
     return responseManager.success(res, 200, 'Login successful', { user: userData });
 };
 
+const logout = async (req, res) => {
+    const cookieName = process.env.AUTH_COOKIE;
+
+    res.clearCookie(cookieName, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV !== 'dev',
+        sameSite: 'none',
+        path: '/'
+    });
+
+    return responseManager.success(res, 200, 'Logged out successfully');
+};
+
 module.exports = {
-    register, login
+    register, login, logout
 };
