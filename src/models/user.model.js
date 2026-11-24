@@ -30,7 +30,12 @@ const categorySchema = new mongoose.Schema({
 
 const userSchema = new mongoose.Schema(
     {
-        currency: { type: String, default: "Rs." },
+        currency: {
+            type: String, default: "Rs.",
+            trim: true,
+            minlength: [1, 'Username must be at least 1 characters'],
+            maxlength: [3, 'Username cannot exceed 3 characters'],
+        },
         dateFormat: { type: String, enum: ['en', 'np'], default: 'en' },
 
         username: {
@@ -52,7 +57,7 @@ const userSchema = new mongoose.Schema(
             required: [true, 'Name is required'],
             trim: true,
             minlength: [3, 'Name must be at least 3 characters'],
-            maxlength: [50, 'Name cannot exceed 50 characters']
+            maxlength: [20, 'Name cannot exceed 20 characters']
         },
 
         email: {
