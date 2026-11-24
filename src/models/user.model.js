@@ -31,7 +31,7 @@ const categorySchema = new mongoose.Schema({
 const userSchema = new mongoose.Schema(
     {
         currency: { type: String, default: "Rs." },
-        dateFormat: { type: String, enum: ['en', 'ne'], default: 'en' },
+        dateFormat: { type: String, enum: ['en', 'np'], default: 'en' },
 
         username: {
             type: String,
