@@ -20,15 +20,22 @@ const register = async (req, res) => {
 
     const user = await User.create({ currency, name, username, email, password, categories: seedDefaultCategories() });
 
-    const token = jwt.sign(
-        { sub: user._id.toString() },
-        process.env.JWT_SECRET,
+    // Generate JWT
+    const token = jwt.sign({ sub: user._id.toString() }, process.env.JWT_SECRET,
         { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
     );
 
-    return responseManager.success(res, 201, 'Account created successfully',
-        { user, token }
-    );
+    // Generate a login token
+    const cookieName = process.env.AUTH_COOKIE;
+    res.cookie(cookieName, token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV !== 'dev',
+        sameSite: 'none',
+        maxAge: 7 * 24 * 60 * 60 * 1000, //1 week
+        path: '/'
+    });
+
+    return responseManager.success(res, 201, 'Account created successfully', { user });
 };
 
 const login = async (req, res) => {
