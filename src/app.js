@@ -4,6 +4,7 @@ require('./config/redis');
 const notFound = require('./middleware/notFound');
 const errorHandler = require('./middleware/errorHandler');
 const cookieParser = require('cookie-parser');
+const connectDatabase = require('./config/database');
 const app = express();
 
 // Middlewares
@@ -17,6 +18,20 @@ app.get('/', (req, res) => {
         message: 'Welcome to Spendify API 🚀',
         version: '1.0.0'
     });
+});
+
+app.use(async (req, res, next) => {
+    try {
+        await connectDatabase();
+        next();
+    } catch (error) {
+        console.error('MongoDB connection error:', error);
+
+        res.status(500).json({
+            success: false,
+            message: 'Database connection failed'
+        });
+    }
 });
 
 // API routes
