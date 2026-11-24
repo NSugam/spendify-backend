@@ -6,7 +6,7 @@ const AppError = require('../utils/AppError');
 const authenticate = async (req, res, next) => {
     const cookie = process.env.AUTH_COOKIE;
     const token = req.cookies[cookie];
-    if (!token) throw new AppError('Invalid authentication token', 401);
+    if (!token) throw new AppError('Invalid request. Please login to continue.', 403);
 
     let decoded;
 
