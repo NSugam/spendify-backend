@@ -5,12 +5,10 @@ const connectDatabase = require('./config/database');
 
 const PORT = process.env.PORT || 5000;
 
-const startServer = async () => {
+export const startConnections = async () => {
     await connectDatabase();
 
     app.listen(PORT, () => {
         console.log(`Spendify server running on port ${PORT}`);
     });
 };
-
-startServer();
