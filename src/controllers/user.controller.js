@@ -18,6 +18,9 @@ const uploadProfileImage = async (req, res) => {
             'https://gateway.neupanesugam.com.np/motomate/api/upload/public/image',
             {
                 method: 'POST',
+                headers: {
+                    deviceId: req.headers.deviceId
+                },
                 body: formData,
                 signal: AbortSignal.timeout(30000)
             }
@@ -34,15 +37,12 @@ const uploadProfileImage = async (req, res) => {
     }
 
     if (
-        !response.ok ||
-        !uploadResponse ||
-        typeof uploadResponse !== 'object' ||
-        uploadResponse.success !== true ||
+        !response.ok || !uploadResponse || typeof uploadResponse !== 'object' || uploadResponse.success !== true ||
         typeof uploadResponse.data?.url !== 'string'
     ) {
         throw new AppError(
-            uploadResponse?.message || 'Image upload service failed',
-            502
+            uploadResponse?.message || uploadResponse?.apiResponseMessage || 'Image upload service failed',
+            uploadResponse?.message || uploadResponse?.apiResponseMessage || 502
         );
     }
 
