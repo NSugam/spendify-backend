@@ -38,6 +38,8 @@ const userSchema = new mongoose.Schema(
         },
         dateFormat: { type: String, enum: ['en', 'np'], default: 'en' },
 
+        userImageUrl: { type: String, required: false },
+
         username: {
             type: String,
             required: [true, 'Username is required'],
