@@ -15,7 +15,7 @@ const defaultCategories = [
     {
         label: 'Others',
         value: 'other_income',
-        icon: 'PlusCircle',
+        icon: 'Ellipsis',
         type: 'income'
     },
 
@@ -89,7 +89,7 @@ const defaultCategories = [
     {
         label: 'Other Expense',
         value: 'other_expense',
-        icon: 'CircleEllipsis',
+        icon: 'Ellipsis',
         type: 'expense'
     }
 ];

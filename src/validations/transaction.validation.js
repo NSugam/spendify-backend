@@ -1,5 +1,12 @@
 const { z } = require('zod');
 
+const nepaliDateSchema = z.object({
+    year: z.number().int().min(2000).max(2090),
+    month: z.number().int().min(1).max(12),
+    day: z.number().int().min(1).max(32),
+    formatted: z.string().optional()
+});
+
 const createTransactionSchema = z.object({
     name: z.string()
         .trim()
@@ -14,7 +21,9 @@ const createTransactionSchema = z.object({
     category: z.string()
         .regex(/^[0-9a-fA-F]{24}$/, 'Invalid category ID'),
 
-    englishDate: z.coerce.date(),
+    englishDate: z.coerce.date().optional(),
+
+    nepaliDate: nepaliDateSchema.optional(),
 
     iconColor: z.string()
         .regex(/^#[0-9A-Fa-f]{6}$/, 'Invalid hex color')
@@ -24,7 +33,13 @@ const createTransactionSchema = z.object({
         .trim()
         .max(500, 'Note cannot exceed 500 characters')
         .optional()
-});
+}).refine(
+    (data) => (data.englishDate !== undefined) !== (data.nepaliDate !== undefined),
+    {
+        message: 'Provide either englishDate or nepaliDate',
+        path: ['englishDate']
+    }
+);
 
 const updateTransactionSchema = z.object({
     name: z.string()
@@ -45,6 +60,8 @@ const updateTransactionSchema = z.object({
 
     englishDate: z.coerce.date().optional(),
 
+    nepaliDate: nepaliDateSchema.optional(),
+
     iconColor: z.string()
         .regex(/^#[0-9A-Fa-f]{6}$/, 'Invalid hex color')
         .optional(),
@@ -54,6 +71,12 @@ const updateTransactionSchema = z.object({
         .max(500)
         .optional()
 }).refine(
+    (data) => !(data.englishDate !== undefined && data.nepaliDate !== undefined),
+    {
+        message: 'Provide either englishDate or nepaliDate',
+        path: ['englishDate']
+    }
+).refine(
     (data) => Object.keys(data).length > 0,
     { message: 'At least one field is required' }
 );

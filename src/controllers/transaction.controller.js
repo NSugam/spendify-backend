@@ -9,6 +9,7 @@ const createTransaction = async (req, res) => {
         type,
         category,
         englishDate,
+        nepaliDate,
         iconColor,
         note
     } = req.body;
@@ -35,6 +36,7 @@ const createTransaction = async (req, res) => {
         type,
         category,
         englishDate,
+        nepaliDate,
         iconColor,
         note
     });
