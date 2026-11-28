@@ -18,6 +18,7 @@ router.use('/auth', authRoutes);
 router.use('/user', userRoutes);
 router.use('/categories', categoryRoutes);
 router.use('/transactions', require('./transaction.routes'));
+router.use('/notes', require('./notes.routes'));
 router.use("/notification", notificationRoutes);
 router.use('/cron', cronRoutes);
 
