@@ -1,6 +1,27 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
+const friendSchema = new mongoose.Schema(
+    {
+        username: {
+            type: String,
+            required: true,
+            lowercase: true,
+            trim: true
+        },
+        name: {
+            type: String,
+            required: true,
+            trim: true
+        },
+        userImageUrl: {
+            type: String,
+            default: null
+        }
+    },
+    { _id: false }
+);
+
 const categorySchema = new mongoose.Schema({
     label: {
         type: String,
@@ -94,6 +115,11 @@ const userSchema = new mongoose.Schema(
 
         categories: {
             type: [categorySchema],
+            default: []
+        },
+
+        myFriends: {
+            type: [friendSchema],
             default: []
         }
     },
