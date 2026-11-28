@@ -1,5 +1,14 @@
 const { z } = require('zod');
 
+const findFriendsSchema = z.object({
+    username: z.string()
+        .trim()
+        .toLowerCase()
+        .min(3)
+        .max(20)
+        .regex(/^[a-z0-9_]+$/, 'Username can only contain letters, numbers and underscores')
+});
+
 const updateProfileSchema = z.object({
     name: z.string().trim().min(3).max(50).optional(),
     username: z.string()
@@ -17,5 +26,6 @@ const updateProfileSchema = z.object({
 );
 
 module.exports = {
+    findFriendsSchema,
     updateProfileSchema
 };

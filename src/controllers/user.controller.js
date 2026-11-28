@@ -56,6 +56,26 @@ const getProfile = async (req, res) => {
     return responseManager.success(res, 200, 'Profile fetched successfully', { user: req.user });
 };
 
+const findFriends = async (req, res) => {
+    const { username } = req.validated.query;
+    const users = await User.find({
+        username: { $regex: `^${username}` },
+        _id: { $ne: req.user._id },
+        isActive: true
+    })
+        .select('name username userImageUrl -_id')
+        .sort({ username: 1 })
+        .limit(20)
+        .lean();
+
+    return responseManager.success(
+        res,
+        200,
+        'User search completed.',
+        { users }
+    );
+};
+
 const updateProfile = async (req, res) => {
     if (req.body.username) {
         const existingUser = await User.findOne({
@@ -80,5 +100,6 @@ const updateProfile = async (req, res) => {
 module.exports = {
     uploadProfileImage,
     getProfile,
+    findFriends,
     updateProfile
 };

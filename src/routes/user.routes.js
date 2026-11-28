@@ -5,7 +5,10 @@ const userDeviceController = require('../controllers/userDevice.controller');
 const authenticate = require('../middleware/authenticate');
 const validate = require('../middleware/validate');
 const uploadImage = require('../middleware/uploadImage');
-const { updateProfileSchema } = require('../validations/user.validation');
+const {
+    findFriendsSchema,
+    updateProfileSchema
+} = require('../validations/user.validation');
 const {
     registerDeviceSchema,
     unregisterDeviceSchema
@@ -13,6 +16,7 @@ const {
 
 // Get user profile
 router.get('/profile', authenticate, userController.getProfile);
+router.get('/friends', authenticate, validate(findFriendsSchema, 'query'), userController.findFriends);
 router.patch('/profile', authenticate, validate(updateProfileSchema), userController.updateProfile);
 router.post('/profile/image', authenticate, uploadImage, userController.uploadProfileImage);
 router.post('/devices', authenticate, validate(registerDeviceSchema), userDeviceController.registerDevice);
