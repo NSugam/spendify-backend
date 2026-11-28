@@ -28,6 +28,21 @@ const createNoteSchema = z.object({
     reminder: reminderSchema.optional()
 });
 
+const updateNoteSchema = createNoteSchema
+    .partial()
+    .extend({
+        isCompleted: z.boolean().optional()
+    })
+    .refine((data) => Object.keys(data).length > 0, {
+        message: 'At least one field is required'
+    });
+
+const noteIdSchema = z.object({
+    id: z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid note ID')
+});
+
 module.exports = {
-    createNoteSchema
+    createNoteSchema,
+    updateNoteSchema,
+    noteIdSchema
 };

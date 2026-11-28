@@ -1,4 +1,5 @@
 const Note = require('../models/notes.model');
+const AppError = require('../utils/AppError');
 const responseManager = require('../utils/responseManager');
 
 const getNotes = async (req, res) => {
@@ -28,7 +29,47 @@ const createNote = async (req, res) => {
     );
 };
 
+const updateNote = async (req, res) => {
+    const note = await Note.findOne({
+        _id: req.params.id,
+        user: req.user._id
+    });
+
+    if (!note) {
+        throw new AppError('Note not found', 404);
+    }
+
+    note.set(req.body);
+    await note.save();
+
+    return responseManager.success(
+        res,
+        200,
+        'Note updated successfully',
+        { note }
+    );
+};
+
+const deleteNote = async (req, res) => {
+    const note = await Note.findOneAndDelete({
+        _id: req.params.id,
+        user: req.user._id
+    });
+
+    if (!note) {
+        throw new AppError('Note not found', 404);
+    }
+
+    return responseManager.success(
+        res,
+        200,
+        'Note deleted successfully'
+    );
+};
+
 module.exports = {
     getNotes,
-    createNote
+    createNote,
+    updateNote,
+    deleteNote
 };
