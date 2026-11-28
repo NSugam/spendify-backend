@@ -4,7 +4,7 @@ const authenticate = require('../middleware/authenticate');
 const validate = require('../middleware/validate');
 const {
     sendFriendRequestSchema,
-    acceptFriendRequestParamsSchema
+    friendRequestIdParamsSchema
 } = require('../validations/friendRequest.validation');
 
 router.get('/', authenticate, friendRequestController.getIncomingFriendRequests);
@@ -12,8 +12,14 @@ router.post('/', authenticate, validate(sendFriendRequestSchema), friendRequestC
 router.patch(
     '/:id/accept',
     authenticate,
-    validate(acceptFriendRequestParamsSchema, 'params'),
+    validate(friendRequestIdParamsSchema, 'params'),
     friendRequestController.acceptFriendRequest
+);
+router.patch(
+    '/:id/decline',
+    authenticate,
+    validate(friendRequestIdParamsSchema, 'params'),
+    friendRequestController.declineFriendRequest
 );
 
 module.exports = router;

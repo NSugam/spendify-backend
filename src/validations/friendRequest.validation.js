@@ -9,11 +9,11 @@ const sendFriendRequestSchema = z.object({
         .regex(/^[a-z0-9_]+$/, 'Invalid username')
 });
 
-const acceptFriendRequestParamsSchema = z.object({
+const friendRequestIdParamsSchema = z.object({
     id: z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid friend request ID')
 });
 
 module.exports = {
     sendFriendRequestSchema,
-    acceptFriendRequestParamsSchema
+    friendRequestIdParamsSchema
 };

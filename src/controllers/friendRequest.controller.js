@@ -165,8 +165,43 @@ const acceptFriendRequest = async (req, res) => {
     );
 };
 
+const declineFriendRequest = async (req, res) => {
+    const friendRequest = await FriendRequest.findOneAndUpdate(
+        {
+            _id: req.params.id,
+            recipient: req.user._id,
+            status: 'pending'
+        },
+        {
+            $set: {
+                status: 'declined',
+                declinedAt: new Date()
+            }
+        },
+        { new: true }
+    );
+
+    if (!friendRequest) {
+        throw new AppError('Pending friend request not found', 404);
+    }
+
+    return responseManager.success(
+        res,
+        200,
+        'Friend request declined successfully',
+        {
+            friendRequest: {
+                _id: friendRequest._id,
+                status: friendRequest.status,
+                declinedAt: friendRequest.declinedAt
+            }
+        }
+    );
+};
+
 module.exports = {
     getIncomingFriendRequests,
     sendFriendRequest,
-    acceptFriendRequest
+    acceptFriendRequest,
+    declineFriendRequest
 };
